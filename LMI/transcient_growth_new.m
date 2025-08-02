@@ -1,20 +1,3 @@
-%acc(a, b, k, Re)
-% cluster=1;
-% if cluster
-%     %n_samples=12;
-%    % parpool(12);
-%    addpath(genpath('/home/zhw22003/YALMIP-master'))
-%    system('export PATH=$PATH:/home/zhw22003/mosek/10.2/tools/platform/linux64x86/bin')
-%    addpath(genpath('/home/zhw22003/mosek'))
-% %     addpath(genpath('/home/jtw24004/YALMIP-master'));
-% %     system('export PATH=$PATH:/home/jtw24004/mosek/10.2/tools/platform/linux64x86/bin')
-% %     addpath(genpath('/home/jtw24004/mosek'));
-% %     addpath(genpath('/home/jtw24004/matlabfunction'));
-% else
-%   %  n_samples=12;
-%    % parpool(12);
-% end
-% 
 % addpath(genpath('/home/zhw22003/YALMIP-master'))
 % system('export PATH=$PATH:/home/zhw22003/mosek/11.0/tools/platform/linux64x86/bin')
 % addpath(genpath('/home/zhw22003/mosek'))
