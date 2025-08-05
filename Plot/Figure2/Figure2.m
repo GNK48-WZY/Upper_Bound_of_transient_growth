@@ -1,3 +1,7 @@
+all_t_optimal = readmatrix("y_tau_Linf.csv");
+G_storage = readmatrix("y_tau_Linf.csv");
+
+
 % Given data
 t0 = [0, 10, 20, 40, 60, 80, 100];
 % t0 = 20;
