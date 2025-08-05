@@ -1,3 +1,7 @@
+all_V_lyap = readmatrix("all_V_lyap.csv");
+bound = readmatrix("bound.csv");
+time_points = readmatrix("time_points.csv");
+
 cmap = lines(5);
 figure;
 hold on;
