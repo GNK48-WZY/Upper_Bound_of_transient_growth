@@ -1,3 +1,6 @@
+all_t_optimal = readmatrix("all_t_optimal_dec_kx_0.csv");
+G_storage = readcell("G_storage_dec_kx_0.csv");
+
 % Given data
 t0 = [0, 10, 20, 40, 60, 80, 100];
 % t0 = 20;
