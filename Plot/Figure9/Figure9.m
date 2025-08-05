@@ -1,7 +1,7 @@
 %% dt
 
-all_V_lyap = readmatrix("all_V_lyap.csv");
-bound = readmatrix("bound.csv");
+G_storages_new = readmatrix("G_storages_dt_1_0_5_0_1.csv");
+All_t_optimal_new = readmatrix("all_t_optimal_dt_1_0_5_0_1.csv");
 
 
 t0 = 20;  % Single value
@@ -69,8 +69,8 @@ hold off;
 
 %% M
 
-all_V_lyap = readmatrix("all_V_lyap.csv");
-bound = readmatrix("bound.csv");
+G_storages_new = readmatrix("G_storages_M_24_32_48.csv");
+All_t_optimal_new = readmatrix("all_t_optimal_M_24_32_48.csv");
 
 t0 = 20;  % Single value
 T = 200;
