@@ -1,5 +1,5 @@
-all_t_optimal = readmatrix("y_tau_Linf.csv");
-G_storage = readmatrix("G_storage_dec_kx_1_2.csv.csv");
+all_t_optimal = readmatrix("all_t_optimal_dec_kx_1_2.csv");
+G_storage = readmatrix("G_storage_dec_kx_1_2.csv");
 
 
 % Given data
