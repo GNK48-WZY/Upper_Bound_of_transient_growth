@@ -1,3 +1,9 @@
+%% dt
+
+all_V_lyap = readmatrix("all_V_lyap.csv");
+bound = readmatrix("bound.csv");
+
+
 t0 = 20;  % Single value
 T = 200;
 dt = [1, 0.5, 0.1];
@@ -61,7 +67,10 @@ hold off;
 
 
 
-%% 
+%% M
+
+all_V_lyap = readmatrix("all_V_lyap.csv");
+bound = readmatrix("bound.csv");
 
 t0 = 20;  % Single value
 T = 200;
