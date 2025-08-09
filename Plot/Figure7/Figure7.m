@@ -1,3 +1,30 @@
+% Initialize the cell array
+all_eigenvalues = cell(1, 7);
+
+% Loop through files 1 to 7
+for k = 1:7
+    % Construct filename
+    filename = sprintf('all_eigenvalues_%d.csv', k);
+    
+    % Read data using readcell
+    cell_data = readcell(filename);
+    
+    % Convert cell array to numeric vector and ensure column orientation
+    if iscell(cell_data)
+        numeric_vector = cell2mat(cell_data);
+    else
+        numeric_vector = cell_data;
+    end
+    
+    if isrow(numeric_vector)
+        numeric_vector = numeric_vector';
+    end
+    
+    % Store in the combined cell array
+    all_eigenvalues{k} = numeric_vector;
+end
+
+
 figure;
 hold on;
 cmap = lines(length(t0));  % Colormap with 9 colors (one per t0 value)
