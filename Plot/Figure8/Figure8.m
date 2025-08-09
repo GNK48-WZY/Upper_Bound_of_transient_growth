@@ -63,20 +63,15 @@ q = q(:);   % ensure column vector
 for j3 = 1:length(t0)
     if ~isempty(all_eigenvectors{j3})
                % Full spatial grid (including boundaries)
-%         x_full = [-1,x,1];  % Size N x 1
         Nx = 32;
-%          x_full = linspace(0,2*pi/a,Nx);
         kx = a; kz = b;
         k2 = kx^2 + kz^2;
         
-        % Choose the first time step for mode visualization
-%         j1 = 1;
         
        % After getting eigenvector q
        for j1_ind = 1:length(t0)
         max_eig(j1_ind) = max(all_eigenvalues{j3}{j1_ind});
        end
-%         [~,j1_max] = max(max_eig);
         j1_max = 1;
         [~,max_idx] = max(all_eigenvalues{j3}{j1_max});
         t_current = t0(j3) + (j1_max-1)*dt;
@@ -98,14 +93,10 @@ for j3 = 1:length(t0)
         Dv_full = [0; Dv_interior; 0]; % Pad boundaries
         
         % Compute velocity components (now all size N)
-%         kx = a; kz = b;
-%         k2 = kx^2 + kz^2;
         u_hat = (1/k2) * (1i*kx * Dv_full - 1i*kz * wy_full);
         v_hat = v_full;
         w_hat = (1/k2) * (1i*kz * Dv_full + 1i*kx * wy_full);
         
-%         u = real(u_hat.*exp(1i*kx*x_full));
-
         y_grid = linspace(-1, 1, N)';
         x_grid = linspace(0, 2*pi/a, Nx)';
         [X, Y] = meshgrid(x_grid, y_grid);
