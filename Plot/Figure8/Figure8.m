@@ -1,56 +1,119 @@
 % Remember to unzip all_eigenvectors_1 to 3 
 U_interior = readmatrix("U_interior.csv");
+V = readmatrix("V.csv");
+t0 = [0, 10, 20, 40, 60, 80, 100];
+dt = 1;
+N = 32;
+a = 1.2; 
+b = 0;
 
+
+[x, D, D2, D4,w] =finitediff(N,2);
 % Initialize the cell array
-all_eigenvalues = cell(1, 7);
+% all_eigenvalues = cell(1, 7);
 
-% Loop through files 1 to 7
-for k = 1:7
-    % Construct filename
-    filename = sprintf('all_eigenvalues_%d.csv', k);
-    
-    % Read data using readcell
-    cell_data = readcell(filename);
-    
-    % Convert cell array to numeric vector and ensure column orientation
-    if iscell(cell_data)
-        numeric_vector = cell2mat(cell_data);
-    else
-        numeric_vector = cell_data;
-    end
-    
-    if isrow(numeric_vector)
-        numeric_vector = numeric_vector';
-    end
-    
-    % Store in the combined cell array
-    all_eigenvalues{k} = numeric_vector;
+% % Loop through files 1 to 7
+% for k = 1:7
+%     % Construct filename
+%     filename = sprintf('all_eigenvalues_%d.csv', k);
+%     
+%     % Read data using readcell
+%     cell_data = readcell(filename);
+%     
+%     % Convert cell array to numeric vector and ensure column orientation
+%     if iscell(cell_data)
+%         numeric_vector = cell2mat(cell_data);
+%     else
+%         numeric_vector = cell_data;
+%     end
+%     
+%     if isrow(numeric_vector)
+%         numeric_vector = numeric_vector';
+%     end
+%     
+%     % Store in the combined cell array
+%     all_eigenvalues{k} = numeric_vector;
+% end
+% 
+% all_eigenvectors = cell(1, 7);
+% 
+% % Loop through files 1 to 7
+% for k = 1:7
+%     % Construct filename
+%     filename = sprintf('all_eigenvectors_%d.csv', k);
+%     
+%     % Read data using readcell
+%     cell_data = readcell(filename);
+%     
+%     % Convert cell array to numeric vector and ensure column orientation
+%     if iscell(cell_data)
+%         numeric_vector = cell2mat(cell_data);
+%     else
+%         numeric_vector = cell_data;
+%     end
+%     
+%     if isrow(numeric_vector)
+%         numeric_vector = numeric_vector';
+%     end
+%     
+%     % Store in the combined cell array
+%     all_eigenvectors{k} = numeric_vector;
+% end
+
+% ----- Replace the two lines above with this block -----
+expected_len = 2*(N-2);   % 60 for N=32
+
+raw = all_eigenvectors{j3}{j1_max};
+
+% unwrap nested 1x1 cells if present
+while iscell(raw) && numel(raw) == 1
+    raw = raw{1};
 end
 
-all_eigenvectors = cell(1, 7);
-
-% Loop through files 1 to 7
-for k = 1:7
-    % Construct filename
-    filename = sprintf('all_eigenvectors_%d.csv', k);
-    
-    % Read data using readcell
-    cell_data = readcell(filename);
-    
-    % Convert cell array to numeric vector and ensure column orientation
-    if iscell(cell_data)
-        numeric_vector = cell2mat(cell_data);
-    else
-        numeric_vector = cell_data;
-    end
-    
-    if isrow(numeric_vector)
-        numeric_vector = numeric_vector';
-    end
-    
-    % Store in the combined cell array
-    all_eigenvectors{k} = numeric_vector;
+% if textual, try converting to numeric
+if ischar(raw) || isstring(raw)
+    raw = str2num(raw); %#ok<ST2NM>
 end
+
+if ~isnumeric(raw)
+    error('Unexpected format in all_eigenvectors{%d}{%d}: %s', j3, j1_max, class(raw));
+end
+
+% pick the correct column/row/vector as coefficients
+if isvector(raw) && length(raw) == expected_len
+    coeffs = raw(:);
+elseif size(raw,1) == expected_len && size(raw,2) >= max_idx
+    coeffs = raw(:, max_idx);        % common case: modes are columns
+elseif size(raw,2) == expected_len && size(raw,1) >= max_idx
+    coeffs = raw(max_idx, :)';       % modes stored as rows
+else
+    error('Cannot find a length-%d vector in raw (size = [%d %d]).', expected_len, size(raw,1), size(raw,2));
+end
+
+% Map coefficients to physical state q (prefer V* or V\ over inv(V))
+if length(coeffs) == expected_len
+    q = coeffs;                      % already physical-state vector
+elseif isequal(size(V), [expected_len expected_len])
+    % try V * coeffs (modal->physical) first, then V\coeffs
+    q_try = [];
+    if size(V,2) == length(coeffs)
+        q_try = V * coeffs;
+    end
+    if isempty(q_try) && size(V,1) == length(coeffs)
+        q_try = V \ coeffs;
+    end
+    if isempty(q_try) || ~isvector(q_try) || length(q_try) ~= expected_len
+        error('Unable to map coeffs (len=%d) to expected_len=%d using V.', length(coeffs), expected_len);
+    end
+    q = q_try;
+else
+    error('V has unexpected size [%d %d].', size(V,1), size(V,2));
+end
+
+q = q(:);   % ensure column vector
+% ----- end replacement block -----
+
+
 
 for j3 = 1:length(t0)
     if ~isempty(all_eigenvectors{j3})
@@ -109,7 +172,7 @@ for j3 = 1:length(t0)
         max_abs = max(abs(u_physical(:)));
 %         c_limits = [-max_abs, max_abs];
 %         c_limits = [-3,3];
-%       U_interior = U_yi_function(t_current);
+        U_interior = U_yi_function(t_current);
         g_current = exp(-k0 * t_current);
         U_full   = [-g_current; U_interior(:); +g_current];  % size N×1
         x_pos    = pi/a;                                    % center in x
@@ -170,4 +233,51 @@ for j3 = 1:length(t0)
         hold(ax2,'off');
 
     end
+end
+
+
+
+function [x, D1, D2, D4,w] =finitediff(N,L)
+
+%Differentiation matrix using finite difference scheme.
+%This is suitable for Dirichlet boundary condition v(x=L/2)=v(x=-L/2)=0 at
+%the boundary and Neumann boundary condition v'(x=L/2)=v'(x=-L/2)=0. 
+
+dx=L/N;%get grid spacing. 
+
+x=linspace(-L/2,L/2,N);%get the grid point location
+
+x=x(2:end-1); %delete the first and last points that are zero. 
+
+w=dx*ones(1,N-2);%integration weighting 
+
+N_diff=N-2;%The size of differentiation matrices
+
+%First order derivative based on central difference
+%f'(x_i)=(f(x_{i+1})-f(x_{i-1})/(2*dx)
+%We also use the boundary condition that x_0=x_N=0
+D1_stencil=diag(-1*ones(1,N_diff-1),1)+diag(ones(1,N_diff-1),-1);
+D1=D1_stencil/(2*dx);
+
+%Second order derivative based on central difference
+%f''(x_i)=(f(x_{i+1})-2f(x_i)+f(x_{i-1})/(dx^2)
+%We also use the boundary condition that x_0=x_N=0
+D2_stencil=(diag(-2*ones(1,N_diff))+diag(ones(1,N_diff-1),1)+diag(ones(1,N_diff-1),-1));
+D2=D2_stencil/dx^2;
+
+%Forth order derivative based on central difference
+%f''''(x_i)=(f(x_{i+2})-4f(x_{i+1})+6f(x_i)-4f(x_{i-1})+f(x_{i-2})/(dx^4)
+%This differentiation matrix only go through x_1 up to x_{N-1}
+D4_stencil=(diag(6*ones(1,N_diff))+diag(-4*ones(1,N_diff-1),1)+diag(-4*ones(1,N_diff-1),-1)...
+    + diag(ones(1,N_diff-2),2)+diag(ones(1,N_diff-2),-2));
+
+%Here, we use the Neumann boundary condition that x_0'=x_N'=0
+%such that x_1=x_{-1} and x_{N-1}=x_{N+1} for the ghost points. Then we
+%also use the condition x_0 and x_N=0 to express all values based on x_1 up
+%to x_{N-1}
+D4_stencil(1,1)=D4_stencil(1,1)+1;
+D4_stencil(end,end)=D4_stencil(end,end)+1;
+
+D4=D4_stencil/dx^4;
+
 end
