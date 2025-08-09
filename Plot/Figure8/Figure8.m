@@ -6,63 +6,8 @@ dt = 1;
 N = 32;
 a = 1.2; 
 b = 0;
-
-
 [x, D, D2, D4,w] =finitediff(N,2);
-% Initialize the cell array
-% all_eigenvalues = cell(1, 7);
-
-% % Loop through files 1 to 7
-% for k = 1:7
-%     % Construct filename
-%     filename = sprintf('all_eigenvalues_%d.csv', k);
-%     
-%     % Read data using readcell
-%     cell_data = readcell(filename);
-%     
-%     % Convert cell array to numeric vector and ensure column orientation
-%     if iscell(cell_data)
-%         numeric_vector = cell2mat(cell_data);
-%     else
-%         numeric_vector = cell_data;
-%     end
-%     
-%     if isrow(numeric_vector)
-%         numeric_vector = numeric_vector';
-%     end
-%     
-%     % Store in the combined cell array
-%     all_eigenvalues{k} = numeric_vector;
-% end
-% 
-% all_eigenvectors = cell(1, 7);
-% 
-% % Loop through files 1 to 7
-% for k = 1:7
-%     % Construct filename
-%     filename = sprintf('all_eigenvectors_%d.csv', k);
-%     
-%     % Read data using readcell
-%     cell_data = readcell(filename);
-%     
-%     % Convert cell array to numeric vector and ensure column orientation
-%     if iscell(cell_data)
-%         numeric_vector = cell2mat(cell_data);
-%     else
-%         numeric_vector = cell_data;
-%     end
-%     
-%     if isrow(numeric_vector)
-%         numeric_vector = numeric_vector';
-%     end
-%     
-%     % Store in the combined cell array
-%     all_eigenvectors{k} = numeric_vector;
-% end
-
-% ----- Replace the two lines above with this block -----
 expected_len = 2*(N-2);   % 60 for N=32
-
 raw = all_eigenvectors{j3}{j1_max};
 
 % unwrap nested 1x1 cells if present
