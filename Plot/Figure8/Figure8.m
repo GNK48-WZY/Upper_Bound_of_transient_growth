@@ -1,4 +1,5 @@
 % Remember to unzip all_eigenvectors_1 to 3 
+U_interior = readmatrix("U_interior.csv");
 
 % Initialize the cell array
 all_eigenvalues = cell(1, 7);
