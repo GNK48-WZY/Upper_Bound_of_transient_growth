@@ -1,8 +1,30 @@
 %% dt
-
-G_storages_new = readmatrix("G_storages_dt_1_0_5_0_1.csv");
+clear all
+% G_storages_new = readmatrix("G_storages_new.csv");
 All_t_optimal_new = readmatrix("all_t_optimal_dt_1_0_5_0_1.csv");
 
+for k = 1:3
+    % Construct filename
+    filename = sprintf('G_storages_new_dt_%d.csv', k);
+    
+    % Read data
+    cell_data = readcell(filename);
+    
+    % Convert to numeric matrix
+    if iscell(cell_data)
+        numeric_vector = cell2mat(cell_data);
+    else
+        numeric_vector = cell_data;
+    end
+    
+    % Ensure column orientation
+    if isrow(numeric_vector)
+        numeric_vector = numeric_vector';
+    end
+    
+    % Store numeric matrix
+    G_storages_new_1{k} = numeric_vector;
+end
 
 t0 = 20;  % Single value
 T = 200;
@@ -39,7 +61,7 @@ for j4 = 1:length(dt)
          'HandleVisibility', 'off');
     
     % Plot G(t) curve (solid)
-    plot(ttt_j, G_storages_new{j4}, 'Color', cmap(j4,:), ...
+    plot(ttt_j, G_storages_new_1{j4}, 'Color', cmap(j4,:), ...
          'LineStyle', line_style, ...
          'LineWidth', 1.5, ...
          'HandleVisibility', 'off');
@@ -66,11 +88,33 @@ hold off;
 
 
 
-
 %% M
+% clear all
+% G_storages_new = readmatrix("G_storages_M.csv");
+all_t_optimal_new = readmatrix("all_t_optimal_M_24_32_48.csv");
 
-G_storages_new = readmatrix("G_storages_M_24_32_48.csv");
-All_t_optimal_new = readmatrix("all_t_optimal_M_24_32_48.csv");
+for k = 1:3
+    % Construct filename
+    filename = sprintf('G_storages_new_M_%d.csv', k);
+    
+    % Read data
+    cell_data = readcell(filename);
+    
+    % Convert to numeric matrix
+    if iscell(cell_data)
+        numeric_vector = cell2mat(cell_data);
+    else
+        numeric_vector = cell_data;
+    end
+    
+    % Ensure column orientation
+    if isrow(numeric_vector)
+        numeric_vector = numeric_vector';
+    end
+    
+    % Store numeric matrix
+    G_storages_new{k} = numeric_vector;
+end
 
 t0 = 20;  % Single value
 T = 200;
