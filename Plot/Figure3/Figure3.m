@@ -1,6 +1,6 @@
 clear all
 
-all_t_optimal = readmatrix("all_t_optimal_dec_kx_1_2.csv");
+all_t_optimal = readmatrix("all_t_optimal_dec_kx_0.csv");
 G_storage = cell(1,7);
 
 for k = 1:7
