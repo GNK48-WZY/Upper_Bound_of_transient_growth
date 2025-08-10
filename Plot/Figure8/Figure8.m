@@ -1,5 +1,4 @@
 % Remember to unzip all_eigenvectors_1 to 3 
-U_interior = readmatrix("U_interior.csv");
 V = readmatrix("V.csv");
 t0 = [0, 10, 20, 40, 60, 80, 100];
 dt = 1;
