@@ -1,4 +1,8 @@
 % Remember to unzip all_eigenvectors_1 to 3 
+unzip("all_eigenvectors_1.zip")
+unzip("all_eigenvectors_2.zip")
+unzip("all_eigenvectors_3.zip")
+
 V = readmatrix("V.csv");
 t0 = [0, 10, 20, 40, 60, 80, 100];
 dt = 1;
@@ -6,56 +10,8 @@ N = 32;
 a = 1.2; 
 b = 0;
 [x, D, D2, D4,w] =finitediff(N,2);
-expected_len = 2*(N-2);   % 60 for N=32
-raw = all_eigenvectors{j3}{j1_max};
 
-% unwrap nested 1x1 cells if present
-while iscell(raw) && numel(raw) == 1
-    raw = raw{1};
-end
 
-% if textual, try converting to numeric
-if ischar(raw) || isstring(raw)
-    raw = str2num(raw); %#ok<ST2NM>
-end
-
-if ~isnumeric(raw)
-    error('Unexpected format in all_eigenvectors{%d}{%d}: %s', j3, j1_max, class(raw));
-end
-
-% pick the correct column/row/vector as coefficients
-if isvector(raw) && length(raw) == expected_len
-    coeffs = raw(:);
-elseif size(raw,1) == expected_len && size(raw,2) >= max_idx
-    coeffs = raw(:, max_idx);        % common case: modes are columns
-elseif size(raw,2) == expected_len && size(raw,1) >= max_idx
-    coeffs = raw(max_idx, :)';       % modes stored as rows
-else
-    error('Cannot find a length-%d vector in raw (size = [%d %d]).', expected_len, size(raw,1), size(raw,2));
-end
-
-% Map coefficients to physical state q (prefer V* or V\ over inv(V))
-if length(coeffs) == expected_len
-    q = coeffs;                      % already physical-state vector
-elseif isequal(size(V), [expected_len expected_len])
-    % try V * coeffs (modal->physical) first, then V\coeffs
-    q_try = [];
-    if size(V,2) == length(coeffs)
-        q_try = V * coeffs;
-    end
-    if isempty(q_try) && size(V,1) == length(coeffs)
-        q_try = V \ coeffs;
-    end
-    if isempty(q_try) || ~isvector(q_try) || length(q_try) ~= expected_len
-        error('Unable to map coeffs (len=%d) to expected_len=%d using V.', length(coeffs), expected_len);
-    end
-    q = q_try;
-else
-    error('V has unexpected size [%d %d].', size(V,1), size(V,2));
-end
-
-q = q(:);   % ensure column vector
-% ----- end replacement block -----
 
 
 
