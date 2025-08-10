@@ -5,7 +5,7 @@ G_storage = cell(1,7);
 
 for k = 1:7
     % Construct filename
-    filename = sprintf('G_storage_%d.csv', k);
+    filename = sprintf('G_storage_acc_kx_1_2_%d.csv', k);
     
     % Read data
     cell_data = readcell(filename);
