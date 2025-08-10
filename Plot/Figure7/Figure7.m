@@ -1,4 +1,5 @@
 % Initialize the cell array
+clear all
 all_eigenvalues = cell(1, 7);
 t0 = [0, 10, 20, 40, 60, 80, 100];
 dt = 1;
