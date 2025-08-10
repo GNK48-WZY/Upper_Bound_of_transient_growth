@@ -1,7 +1,9 @@
+clear all;
+
 all_V_lyap = readmatrix("all_V_lyap.csv");
 bound = readmatrix("bound.csv");
 time_points = readmatrix("time_points.csv");
-
+t_sim = readmatrix("t_sim.csv");
 cmap = lines(5);
 figure;
 hold on;
@@ -37,3 +39,4 @@ ylabel('');
 set(gca, 'TickLabelInterpreter', 'latex', 'FontSize', 16);
 box on;
 grid on;
+
