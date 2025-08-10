@@ -1,3 +1,5 @@
+clear all
+
 all_t_optimal = readmatrix("all_t_optimal_dec_kx_1_2.csv");
 G_storage = readcell("G_storage_dec_kx_1_2.csv");
 
