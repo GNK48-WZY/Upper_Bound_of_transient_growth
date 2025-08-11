@@ -1,11 +1,4 @@
-% Remember to unzip all_eigenvectors_1 to 3 
 clear all
-
-% unzip("all_eigenvectors_1.zip")
-% unzip("all_eigenvectors_2.zip")
-% unzip("all_eigenvectors_3.zip")
-
-% V = readmatrix("V.csv");
 t0 = [0, 10, 20, 40, 60, 80, 100];
 dt = 1;
 N = 32;
@@ -14,12 +7,6 @@ b = 0;
 k0= 0.1;
 
 [x, D, D2, D4,w] =finitediff(N,2);
-
-% [D,~]=cheb(N);
-%for bb1=1:length(bb2)
-%b=bb2(bb1);
-%w
-% [yi,w] = clencurt(N);
 h=eye(size(D));
 h1=eye(size(D));
 k2=(a.^2+b.^2)*h;
@@ -28,10 +15,6 @@ w1=w.^0.5;
 W=diag(w1);
 d=D+k;
 WW=W*d;
-% WW=WW(2:N,2:N);
-% W=W(2:N,2:N);
-
-%v
 V=[WW,zeros(N-2,N-2);zeros(N-2,N-2),W]; %126*126
 
 for k = 1:7
@@ -104,19 +87,13 @@ for k = 1:7
     U_interior{k} = numeric_vector;
 end
 
-
-
-
-
-
 for j3 = 1:length(t0)
     if ~isempty(all_eigenvectors{j3})
                % Full spatial grid (including boundaries)
         Nx = 32;
         kx = a; kz = b;
         k2 = kx^2 + kz^2;
-        
-%         
+                
        % After getting eigenvector q
        for j1_ind = 1:length(t0)
         max_eig(j1_ind) = max(all_eigenvalues{j3}(j1_ind,:));
@@ -127,9 +104,7 @@ for j3 = 1:length(t0)
 
         
         
-%         q = all_eigenvectors{j3}{j1_max}(:, max_idx);
         q = all_eigenvectors{j3}(:,max_idx);
-        %q = all_eigenvectors{j3}{j1_max}(:, max_idx);
 
         q = inv(V)*q;
         
@@ -159,9 +134,6 @@ for j3 = 1:length(t0)
         v_physical = real(v_hat .* exp(1i*a*X));
         w_physical = imag(w_hat .* exp(1i*a*X));
         max_abs = max(abs(u_physical(:)));
-%         c_limits = [-max_abs, max_abs];
-%         c_limits = [-3,3];
-%         U_interior = U_yi_function(t_current);
         
         g_current = exp(-k0 * t_current);
         U_full   = [-g_current; U_interior{j3}; +g_current];  % size N×1
