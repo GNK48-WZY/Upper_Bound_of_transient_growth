@@ -1,15 +1,38 @@
 % Remember to unzip all_eigenvectors_1 to 3 
-unzip("all_eigenvectors_1.zip")
-unzip("all_eigenvectors_2.zip")
-unzip("all_eigenvectors_3.zip")
+clear all
 
-V = readmatrix("V.csv");
+% unzip("all_eigenvectors_1.zip")
+% unzip("all_eigenvectors_2.zip")
+% unzip("all_eigenvectors_3.zip")
+
+% V = readmatrix("V.csv");
 t0 = [0, 10, 20, 40, 60, 80, 100];
 dt = 1;
 N = 32;
 a = 1.2; 
 b = 0;
+k0= 0.1;
+
 [x, D, D2, D4,w] =finitediff(N,2);
+
+% [D,~]=cheb(N);
+%for bb1=1:length(bb2)
+%b=bb2(bb1);
+%w
+% [yi,w] = clencurt(N);
+h=eye(size(D));
+h1=eye(size(D));
+k2=(a.^2+b.^2)*h;
+k=(a.^2+b.^2).^0.5*h1;
+w1=w.^0.5;
+W=diag(w1);
+d=D+k;
+WW=W*d;
+% WW=WW(2:N,2:N);
+% W=W(2:N,2:N);
+
+%v
+V=[WW,zeros(N-2,N-2);zeros(N-2,N-2),W]; %126*126
 
 for k = 1:7
     % Construct filename
@@ -34,12 +57,13 @@ for k = 1:7
     all_eigenvalues{k} = numeric_vector;
 end
 
+
 for k = 1:7
     % Construct filename
     filename = sprintf('all_eigenvectors_%d.csv', k);
     
     % Read data
-    cell_data = readcell(filename);
+    cell_data = readmatrix(filename);
     
     % Convert to numeric matrix
     if iscell(cell_data)
@@ -48,7 +72,7 @@ for k = 1:7
         numeric_vector = cell_data;
     end
     
-    % Ensure column orientation
+%     Ensure column orientation
     if isrow(numeric_vector)
         numeric_vector = numeric_vector';
     end
@@ -56,6 +80,33 @@ for k = 1:7
     % Store numeric matrix
     all_eigenvectors{k} = numeric_vector;
 end
+
+for k = 1:7
+    % Construct filename
+    filename = sprintf('U_interior_%d.csv', k);
+    
+    % Read data
+    cell_data = readmatrix(filename);
+    
+    % Convert to numeric matrix
+    if iscell(cell_data)
+        numeric_vector = cell2mat(cell_data);
+    else
+        numeric_vector = cell_data;
+    end
+    
+%     Ensure column orientation
+    if isrow(numeric_vector)
+        numeric_vector = numeric_vector';
+    end
+    
+    % Store numeric matrix
+    U_interior{k} = numeric_vector;
+end
+
+
+
+
 
 
 for j3 = 1:length(t0)
@@ -65,19 +116,23 @@ for j3 = 1:length(t0)
         kx = a; kz = b;
         k2 = kx^2 + kz^2;
         
-        
+%         
        % After getting eigenvector q
        for j1_ind = 1:length(t0)
-        max_eig(j1_ind) = max(all_eigenvalues{j3}{j1_ind});
+        max_eig(j1_ind) = max(all_eigenvalues{j3}(j1_ind,:));
        end
         j1_max = 1;
-        [~,max_idx] = max(all_eigenvalues{j3}{j1_max});
+        [~,max_idx] = max(all_eigenvalues{j3}(j1_max,:));
         t_current = t0(j3) + (j1_max-1)*dt;
 
         
         
-        q = all_eigenvectors{j3}{j1_max}(:, max_idx);
+%         q = all_eigenvectors{j3}{j1_max}(:, max_idx);
+        q = all_eigenvectors{j3}(:,max_idx);
+        %q = all_eigenvectors{j3}{j1_max}(:, max_idx);
+
         q = inv(V)*q;
+        
         % Split state vector
         v_interior = q(1:(N-2));
         wy_interior = q((N-2)+1:end);
@@ -106,9 +161,10 @@ for j3 = 1:length(t0)
         max_abs = max(abs(u_physical(:)));
 %         c_limits = [-max_abs, max_abs];
 %         c_limits = [-3,3];
-        U_interior = U_yi_function(t_current);
+%         U_interior = U_yi_function(t_current);
+        
         g_current = exp(-k0 * t_current);
-        U_full   = [-g_current; U_interior(:); +g_current];  % size N×1
+        U_full   = [-g_current; U_interior{j3}; +g_current];  % size N×1
         x_pos    = pi/a;                                    % center in x
         u_shift  = U_full + x_pos;                          % shifted x‐coordinate
         
