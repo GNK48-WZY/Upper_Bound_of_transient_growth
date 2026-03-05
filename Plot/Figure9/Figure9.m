@@ -1,7 +1,7 @@
 %% dt
 clear all
 % G_storages_new = readmatrix("G_storages_new.csv");
-All_t_optimal_new = readmatrix("all_t_optimal_dt_1_0_5_0_1.csv");
+All_t_optimal_new = readmatrix("all_t_optimal_dt_1_0_5_0_2.csv");
 
 for k = 1:3
     % Construct filename
@@ -28,7 +28,7 @@ end
 
 t0 = 20;  % Single value
 T = 200;
-dt = [1, 0.5, 0.1];
+dt = [1, 0.5, 0.2];
 % dt = 0.5;
 % G_numeric = cell2mat(G_storage);  % Assumes all cells contain scalars
 num_M = length(dt);
